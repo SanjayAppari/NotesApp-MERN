@@ -1,9 +1,11 @@
-import React from 'react'
-
+import Main from './Main'
+import Notes from './Notes'
 export default function Home() {
+
   return (
-    <div>
-      THis is Home
+    <div style={{marginTop:"125px"}}>
+      <Main/>
+      <Notes/>
     </div>
   )
 }

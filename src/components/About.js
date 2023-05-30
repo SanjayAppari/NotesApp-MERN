@@ -5,7 +5,7 @@ function About() {
   const a= useContext(noteContext);
   return (
     <div>
-      This is About  {a.name}
+      This is About +  {a.email}
     </div>
   )
 }
