@@ -14,16 +14,17 @@ router.post('/createUser',  [
     body('email','Enter Valid Email').isEmail(),
     body('password','Password Should Be atleast Length Of 5').isLength({min:5})
 ],async (req,res)=>{
+    let success=false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
     else{
             try{
                 const email = req.body.email;
                 const result = await User.find({"email":email}).exec();
                 if(result.length){
-                    res.json({"Email": email + " Already Exists"});
+                    res.json({success,"Email": email + " Already Exists"});
                 }
                 else
                 {
@@ -41,7 +42,8 @@ router.post('/createUser',  [
                         }
                     }
                     var authToken = jwt.sign(data, JWT_SECRET);
-                    res.json({authToken});
+                    success=true;
+                    res.json({success,authToken});
                 }
             }
             catch(err){
@@ -59,21 +61,24 @@ router.post('/login',  [
     body('email','Enter Valid Email').isEmail(),
     body('password','Password should not be NULL').exists()
 ],async (req,res)=>{
+    
+    let success = false;
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success:success, errors: errors.array() });
     }
     else{
         const {email,password} = req.body;
         try{
             let user = await User.findOne({email});
             if(!user){
-                return res.status(400).json({error:"Enter Correct Credentials"});
+                return res.status(400).json({success:success,error:"Enter Correct Credentials"});
             }
 
             const passwordCompare = await bcrypt.compare(password,user.password);
             if(!passwordCompare){
-                return res.status(400).json({error:"Enter Correct Credentials"});
+                return res.status(400).json({success:success,error:"Enter Correct Credentials"});
             } 
             
             const data = {
@@ -82,7 +87,8 @@ router.post('/login',  [
                 }
             }
             var authToken = jwt.sign(data, JWT_SECRET);
-            res.json({authToken});
+            success=true;
+            res.json({success:success,authToken});
         }
         catch(err){
             console.error(err.message);

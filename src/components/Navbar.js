@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 function Navbar() {
 
     let location = useLocation();
+    let navigate = useNavigate();
     useEffect(() => {
         console.log(location.pathname);
     }, [location]);
+
+    const handleLogout = ()=>{
+        localStorage.removeItem('token');
+        navigate('/login');
+    }
 
     return (
         <div className="shadow fixed-top" >
@@ -25,10 +31,10 @@ function Navbar() {
                                 <Link className={`nav-link ${location.pathname === '/about' ? "active" : ""}`} to="/about">About</Link>
                             </li>
                         </ul>
-                        <div className="d-flex">
+                        {!localStorage.getItem('token') ? <div className="d-flex">
                             <Link to="/login" className="mx-1 btn btn-primary" role='button'>LogIn</Link>
                             <Link to="/signup" className="mx-1 btn btn-primary" role='button'>SignUp</Link>
-                        </div>
+                        </div>:<button onClick={handleLogout} className='btn btn-primary'>Logout</button>}
                     </div>
                 </div>
 
